@@ -10,16 +10,16 @@ func sign(x float64) int {
 	return 0
 }
 
-func perceptron(inputs []float64, weights []float64, t float64) int {
+func perceptron(inputs []float64, weights []float64, threshold float64) int {
 	sum := 0.0
 	for i := range inputs {
 		sum += inputs[i] * weights[i]
 	}
 
-	return sign(sum - t)
+	return sign(sum - threshold)
 }
 
-func and_predictor(inputs []float64, t float64) bool {
+func and_predictor(inputs []float64, threshold float64) int {
 	weights := make([]float64, 0, len(inputs))
 	for i := range inputs {
 		if inputs[i] > 1.0 {
@@ -29,10 +29,10 @@ func and_predictor(inputs []float64, t float64) bool {
 		weights = append(weights, 1.0)
 	}
 
-	return perceptron(inputs, weights, t) == 1
+	return perceptron(inputs, weights, threshold)
 }
 
-func or_predictor(inputs []float64, t float64) bool {
+func or_predictor(inputs []float64, threshold float64) int {
 	weights := make([]float64, 0, len(inputs))
 	for i := range inputs {
 		if inputs[i] > 1.0 {
@@ -42,21 +42,34 @@ func or_predictor(inputs []float64, t float64) bool {
 		weights = append(weights, 1.0)
 	}
 
-	return perceptron(inputs, weights, t) == 1
+	return perceptron(inputs, weights, threshold)
+}
+
+func nand_predictor(inputs []float64, threshold float64) int {
+	weights := make([]float64, 0, len(inputs))
+	for i := range inputs {
+		if inputs[i] > 1.0 {
+			inputs[i] = 1.0
+		}
+
+		weights = append(weights, -1.0)
+	}
+
+	return perceptron(inputs, weights, threshold)
+}
+
+func xor_predictor(inputs []float64) int {
+	or_perceptron := or_predictor(inputs, 0.5)
+	nand_perceptron := nand_predictor(inputs, -1.5)
+
+	hidden_layer := []float64{float64(nand_perceptron), float64(or_perceptron)}
+
+	return and_predictor(hidden_layer, 1.5)
 }
 
 func main() {
-	input_2_bits := []float64{1.0, 0.0}
-	output_2_bits := and_predictor(input_2_bits, 1.5)
+	inputs := []float64{1.0, 0.0}
+	output := xor_predictor(inputs)
 
-	fmt.Printf("is AND (2 bits): %v\n", output_2_bits)
-
-	output_2_bits = or_predictor(input_2_bits, 0.5)
-
-	fmt.Printf("is OR (2 bits): %v\n", output_2_bits)
-
-	input_3_bits := []float64{1.0, 1.0, 1.0}
-	output_3_bits := and_predictor(input_3_bits, 2.5)
-
-	fmt.Printf("is AND (3 bits): %v\n", output_3_bits)
+	fmt.Printf("is XOR: %v\n", output == 1)
 }
