@@ -1,75 +1,35 @@
 package main
 
-import "fmt"
-
-func sign(x float64) int {
-	if x >= 0 {
-		return 1
-	}
-
-	return 0
-}
-
-func perceptron(inputs []float64, weights []float64, threshold float64) int {
-	sum := 0.0
-	for i := range inputs {
-		sum += inputs[i] * weights[i]
-	}
-
-	return sign(sum - threshold)
-}
-
-func and_predictor(inputs []float64, threshold float64) int {
-	weights := make([]float64, 0, len(inputs))
-	for i := range inputs {
-		if inputs[i] > 1.0 {
-			inputs[i] = 1.0
-		}
-
-		weights = append(weights, 1.0)
-	}
-
-	return perceptron(inputs, weights, threshold)
-}
-
-func or_predictor(inputs []float64, threshold float64) int {
-	weights := make([]float64, 0, len(inputs))
-	for i := range inputs {
-		if inputs[i] > 1.0 {
-			inputs[i] = 1.0
-		}
-
-		weights = append(weights, 1.0)
-	}
-
-	return perceptron(inputs, weights, threshold)
-}
-
-func nand_predictor(inputs []float64, threshold float64) int {
-	weights := make([]float64, 0, len(inputs))
-	for i := range inputs {
-		if inputs[i] > 1.0 {
-			inputs[i] = 1.0
-		}
-
-		weights = append(weights, -1.0)
-	}
-
-	return perceptron(inputs, weights, threshold)
-}
-
-func xor_predictor(inputs []float64) int {
-	or_perceptron := or_predictor(inputs, 0.5)
-	nand_perceptron := nand_predictor(inputs, -1.5)
-
-	hidden_layer := []float64{float64(nand_perceptron), float64(or_perceptron)}
-
-	return and_predictor(hidden_layer, 1.5)
-}
+import (
+	"fmt"
+	"go-ai/predictors"
+	"go-ai/utils"
+)
 
 func main() {
-	inputs := []float64{1.0, 0.0}
-	output := xor_predictor(inputs)
+	inputs2Bits := []float64{1.0, 1.0}
 
-	fmt.Printf("is XOR: %v\n", output == 1)
+	outputAnd := predictors.AndPredictor(inputs2Bits, 1.5)
+	outputOr := predictors.OrPredictor(inputs2Bits, 0.5)
+	outputNand := predictors.NandPredictor(inputs2Bits, -1.5)
+	outputXor := predictors.XorPredictor(inputs2Bits)
+
+	fmt.Printf("%v is AND: %v\n", inputs2Bits, outputAnd == 1)
+	fmt.Printf("%v is OR: %v\n", inputs2Bits, outputOr == 1)
+	fmt.Printf("%v is NAND: %v\n", inputs2Bits, outputNand == 1)
+	fmt.Printf("%v is XOR: %v\n", inputs2Bits, outputXor == 1)
+
+	andWeights, andThreshold := predictors.TrainAndPredictor()
+	orWeights, orThreshold := predictors.TrainOrPredictor()
+	nandWeights, nandThreshold := predictors.TrainNandPredictor()
+
+	inputs3Bits := []float64{1.0, 0.0, 1.0}
+
+	outputAnd = utils.Perceptron(inputs3Bits, andWeights, andThreshold)
+	outputOr = utils.Perceptron(inputs3Bits, orWeights, orThreshold)
+	outputNand = utils.Perceptron(inputs3Bits, nandWeights, nandThreshold)
+
+	fmt.Printf("\n%v is AND: %v\n", inputs3Bits, outputAnd == 1)
+	fmt.Printf("%v is OR: %v\n", inputs3Bits, outputOr == 1)
+	fmt.Printf("%v is NAND: %v\n", inputs3Bits, outputNand == 1)
 }
