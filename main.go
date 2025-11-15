@@ -1,9 +1,9 @@
 package main
 
 import (
+	"ai/predictors"
+	"ai/utils"
 	"fmt"
-	"go-ai/predictors"
-	"go-ai/utils"
 )
 
 func main() {

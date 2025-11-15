@@ -1,3 +1,3 @@
-module go-ai
+module ai
 
 go 1.25.4

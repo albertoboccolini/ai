@@ -1,8 +1,8 @@
 package predictors
 
 import (
+	"ai/utils"
 	"fmt"
-	"go-ai/utils"
 )
 
 func AndPredictor(inputs []float64, threshold float64) int {
