@@ -63,12 +63,10 @@ func TrainAndPredictor() ([]float64, float64) {
 		{0, 1, 0},
 		{0, 1, 1},
 		{1, 0, 0},
-		{1, 0, 1},
-		{1, 1, 0},
 		{1, 1, 1},
 	}
 
-	labels := []int{0, 0, 0, 0, 0, 0, 0, 1}
+	labels := []int{0, 0, 0, 0, 0, 1}
 	threshold := 0.5
 
 	weights := utils.TrainSinglePerceptron(examples, labels, threshold, 0.1, 100)
@@ -84,12 +82,10 @@ func TrainOrPredictor() ([]float64, float64) {
 		{0, 1, 0},
 		{0, 1, 1},
 		{1, 0, 0},
-		{1, 0, 1},
-		{1, 1, 0},
 		{1, 1, 1},
 	}
 
-	labels := []int{0, 1, 1, 1, 1, 1, 1, 1}
+	labels := []int{0, 1, 1, 1, 1, 1}
 	threshold := 0.5
 
 	weights := utils.TrainSinglePerceptron(examples, labels, threshold, 0.1, 100)
@@ -105,12 +101,10 @@ func TrainNandPredictor() ([]float64, float64) {
 		{0, 1, 0},
 		{0, 1, 1},
 		{1, 0, 0},
-		{1, 0, 1},
-		{1, 1, 0},
 		{1, 1, 1},
 	}
 
-	labels := []int{1, 1, 1, 1, 1, 1, 1, 0}
+	labels := []int{1, 1, 1, 1, 1, 0}
 	threshold := -0.5
 
 	weights := utils.TrainSinglePerceptron(examples, labels, threshold, 0.1, 100)
