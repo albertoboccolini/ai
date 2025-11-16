@@ -5,6 +5,15 @@ import (
 	"fmt"
 )
 
+var examples = [][]float64{
+	{0, 0, 0},
+	{0, 0, 1},
+	{0, 1, 0},
+	{0, 1, 1},
+	{1, 0, 0},
+	{1, 1, 1},
+}
+
 func AndPredictor(inputs []float64, threshold float64) int {
 	weights := make([]float64, 0, len(inputs))
 
@@ -57,14 +66,6 @@ func XorPredictor(inputs []float64) int {
 }
 
 func TrainAndPredictor() ([]float64, float64) {
-	examples := [][]float64{
-		{0, 0, 0},
-		{0, 0, 1},
-		{0, 1, 0},
-		{0, 1, 1},
-		{1, 0, 0},
-		{1, 1, 1},
-	}
 
 	labels := []int{0, 0, 0, 0, 0, 1}
 	threshold := 0.5
@@ -76,15 +77,6 @@ func TrainAndPredictor() ([]float64, float64) {
 }
 
 func TrainOrPredictor() ([]float64, float64) {
-	examples := [][]float64{
-		{0, 0, 0},
-		{0, 0, 1},
-		{0, 1, 0},
-		{0, 1, 1},
-		{1, 0, 0},
-		{1, 1, 1},
-	}
-
 	labels := []int{0, 1, 1, 1, 1, 1}
 	threshold := 0.5
 
@@ -95,15 +87,6 @@ func TrainOrPredictor() ([]float64, float64) {
 }
 
 func TrainNandPredictor() ([]float64, float64) {
-	examples := [][]float64{
-		{0, 0, 0},
-		{0, 0, 1},
-		{0, 1, 0},
-		{0, 1, 1},
-		{1, 0, 0},
-		{1, 1, 1},
-	}
-
 	labels := []int{1, 1, 1, 1, 1, 0}
 	threshold := -0.5
 
