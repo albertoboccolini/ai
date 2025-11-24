@@ -1,4 +1,4 @@
-package multilayer_neural_network
+package neural_network
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 	"math/rand"
 )
 
-type MultilayerNeuralNetwork struct {
+type NeuralNetwork struct {
 	InputFeatures              int
 	HiddenLayerNeurons         int
 	OutputFeatures             int
@@ -24,8 +24,8 @@ func sigmoidDerivative(x float64) float64 {
 	return x * (1.0 - x)
 }
 
-func New(inputFeatures, hiddenLayerNeurons, outputFeatures int) *MultilayerNeuralNetwork {
-	network := &MultilayerNeuralNetwork{
+func New(inputFeatures, hiddenLayerNeurons, outputFeatures int) *NeuralNetwork {
+	network := &NeuralNetwork{
 		InputFeatures:              inputFeatures,
 		HiddenLayerNeurons:         hiddenLayerNeurons,
 		OutputFeatures:             outputFeatures,
@@ -62,7 +62,7 @@ func New(inputFeatures, hiddenLayerNeurons, outputFeatures int) *MultilayerNeura
 	return network
 }
 
-func forward(network *MultilayerNeuralNetwork, inputs []float64) ([]float64, []float64) {
+func forward(network *NeuralNetwork, inputs []float64) ([]float64, []float64) {
 	hiddenLayerOutputs := make([]float64, network.HiddenLayerNeurons)
 	for hiddenNeuronIndex := range hiddenLayerOutputs {
 		hiddenNeuronInput := network.BiasForHiddenLayer[hiddenNeuronIndex]
@@ -86,7 +86,7 @@ func forward(network *MultilayerNeuralNetwork, inputs []float64) ([]float64, []f
 	return hiddenLayerOutputs, outputLayerOutputs
 }
 
-func Train(network *MultilayerNeuralNetwork, examples [][]float64, labels [][]float64, lambda float64, maxEpochs int) {
+func Train(network *NeuralNetwork, examples [][]float64, labels [][]float64, lambda float64, maxEpochs int) {
 	for range maxEpochs {
 		for exampleIndex := range examples {
 			hiddenLayerOutputs, outputLayerOutputs := forward(network, examples[exampleIndex])
@@ -129,12 +129,12 @@ func Train(network *MultilayerNeuralNetwork, examples [][]float64, labels [][]fl
 	}
 }
 
-func Predict(network *MultilayerNeuralNetwork, inputs []float64) []float64 {
+func Predict(network *NeuralNetwork, inputs []float64) []float64 {
 	_, outputs := forward(network, inputs)
 	return outputs
 }
 
-func PrintTrainingResults(network *MultilayerNeuralNetwork, examples [][]float64, labels [][]float64) {
+func PrintTrainingResults(network *NeuralNetwork, examples [][]float64, labels [][]float64) {
 	fmt.Println("Weights Input -> Hidden:")
 	for i := range network.WeightsInputToHiddenLayer {
 		fmt.Printf("  Input %d: %v\n", i, network.WeightsInputToHiddenLayer[i])

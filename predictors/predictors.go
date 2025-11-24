@@ -1,7 +1,7 @@
 package predictors
 
 import (
-	"ai/single_perceptron"
+	"ai/perceptron"
 )
 
 func AndPredictor(inputs []float64, threshold float64) int {
@@ -15,7 +15,7 @@ func AndPredictor(inputs []float64, threshold float64) int {
 		weights = append(weights, 1.0)
 	}
 
-	return single_perceptron.Perceptron(inputs, weights, threshold)
+	return perceptron.Perceptron(inputs, weights, threshold)
 }
 
 func OrPredictor(inputs []float64, threshold float64) int {
@@ -29,7 +29,7 @@ func OrPredictor(inputs []float64, threshold float64) int {
 		weights = append(weights, 1.0)
 	}
 
-	return single_perceptron.Perceptron(inputs, weights, threshold)
+	return perceptron.Perceptron(inputs, weights, threshold)
 }
 
 func NandPredictor(inputs []float64, threshold float64) int {
@@ -43,7 +43,7 @@ func NandPredictor(inputs []float64, threshold float64) int {
 		weights = append(weights, -1.0)
 	}
 
-	return single_perceptron.Perceptron(inputs, weights, threshold)
+	return perceptron.Perceptron(inputs, weights, threshold)
 }
 
 func XorPredictor(inputs []float64) int {
