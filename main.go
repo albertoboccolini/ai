@@ -1,8 +1,10 @@
 package main
 
 import (
+	"ai/multilayer_neural_network"
 	"ai/predictors"
-	"ai/utils"
+	"ai/single_perceptron"
+	"ai/trainers"
 	"fmt"
 )
 
@@ -19,17 +21,21 @@ func main() {
 	fmt.Printf("%v is NAND: %v\n", inputs2Bits, outputNand == 1)
 	fmt.Printf("%v is XOR: %v\n", inputs2Bits, outputXor == 1)
 
-	andWeights, andThreshold := predictors.TrainAndPredictor()
-	orWeights, orThreshold := predictors.TrainOrPredictor()
-	nandWeights, nandThreshold := predictors.TrainNandPredictor()
+	andWeights, andThreshold := trainers.AndTrainer()
+	orWeights, orThreshold := trainers.OrTrainer()
+	nandWeights, nandThreshold := trainers.NandTrainer()
 
 	inputs3Bits := []float64{1.0, 0.0, 1.0}
 
-	outputAnd = utils.Perceptron(inputs3Bits, andWeights, andThreshold)
-	outputOr = utils.Perceptron(inputs3Bits, orWeights, orThreshold)
-	outputNand = utils.Perceptron(inputs3Bits, nandWeights, nandThreshold)
+	outputAnd = single_perceptron.Perceptron(inputs3Bits, andWeights, andThreshold)
+	outputOr = single_perceptron.Perceptron(inputs3Bits, orWeights, orThreshold)
+	outputNand = single_perceptron.Perceptron(inputs3Bits, nandWeights, nandThreshold)
 
 	fmt.Printf("\n%v is AND: %v\n", inputs3Bits, outputAnd == 1)
 	fmt.Printf("%v is OR: %v\n", inputs3Bits, outputOr == 1)
 	fmt.Printf("%v is NAND: %v\n", inputs3Bits, outputNand == 1)
+
+	xorNetwork := trainers.XorTrainer()
+	outputXorNetwork := multilayer_neural_network.Predict(xorNetwork, inputs3Bits)
+	fmt.Printf("\n%v is XOR: %v\n", inputs3Bits, outputXorNetwork[0] > 0.5)
 }

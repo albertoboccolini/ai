@@ -1,4 +1,4 @@
-package utils
+package single_perceptron
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func Perceptron(inputs []float64, weights []float64, threshold float64) int {
 	return sign(sum - threshold)
 }
 
-func TrainSinglePerceptron(examples [][]float64, labels []int, threshold float64, lambda float64, maxEpochs int) []float64 {
+func Train(examples [][]float64, labels []int, threshold float64, lambda float64, maxEpochs int) []float64 {
 	weights := make([]float64, len(examples[0]))
 
 	for range maxEpochs {
