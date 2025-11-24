@@ -64,23 +64,23 @@ func New(inputFeatures, hiddenLayerNeurons, outputFeatures int) *NeuralNetwork {
 
 func forward(network *NeuralNetwork, inputs []float64) ([]float64, []float64) {
 	hiddenLayerOutputs := make([]float64, network.HiddenLayerNeurons)
-	for hiddenNeuronIndex := range hiddenLayerOutputs {
-		hiddenNeuronInput := network.BiasForHiddenLayer[hiddenNeuronIndex]
+	for hiddenLayerOutput := range hiddenLayerOutputs {
+		hiddenNeuronInput := network.BiasForHiddenLayer[hiddenLayerOutput]
 
-		for inputIndex := range inputs {
-			hiddenNeuronInput += inputs[inputIndex] * network.WeightsInputToHiddenLayer[inputIndex][hiddenNeuronIndex]
+		for input := range inputs {
+			hiddenNeuronInput += inputs[input] * network.WeightsInputToHiddenLayer[input][hiddenLayerOutput]
 		}
-		hiddenLayerOutputs[hiddenNeuronIndex] = sigmoid(hiddenNeuronInput)
+		hiddenLayerOutputs[hiddenLayerOutput] = sigmoid(hiddenNeuronInput)
 	}
 
 	outputLayerOutputs := make([]float64, network.OutputFeatures)
-	for outputNeuronIndex := range outputLayerOutputs {
-		outputNeuronInput := network.BiasForOutputLayer[outputNeuronIndex]
+	for outputNeuron := range outputLayerOutputs {
+		outputNeuronInput := network.BiasForOutputLayer[outputNeuron]
 
-		for hiddenNeuronIndex := range hiddenLayerOutputs {
-			outputNeuronInput += hiddenLayerOutputs[hiddenNeuronIndex] * network.WeightsHiddenToOutputLayer[hiddenNeuronIndex][outputNeuronIndex]
+		for hiddenLayerOutput := range hiddenLayerOutputs {
+			outputNeuronInput += hiddenLayerOutputs[hiddenLayerOutput] * network.WeightsHiddenToOutputLayer[hiddenLayerOutput][outputNeuron]
 		}
-		outputLayerOutputs[outputNeuronIndex] = sigmoid(outputNeuronInput)
+		outputLayerOutputs[outputNeuron] = sigmoid(outputNeuronInput)
 	}
 
 	return hiddenLayerOutputs, outputLayerOutputs
@@ -88,22 +88,23 @@ func forward(network *NeuralNetwork, inputs []float64) ([]float64, []float64) {
 
 func Train(network *NeuralNetwork, examples [][]float64, labels [][]float64, lambda float64, maxEpochs int) {
 	for range maxEpochs {
-		for exampleIndex := range examples {
-			hiddenLayerOutputs, outputLayerOutputs := forward(network, examples[exampleIndex])
+		for example := range examples {
+			hiddenLayerOutputs, outputLayerOutputs := forward(network, examples[example])
 
 			outputLayerErrors := make([]float64, network.OutputFeatures)
-			for outputIndex := range outputLayerOutputs {
-				error := labels[exampleIndex][outputIndex] - outputLayerOutputs[outputIndex]
-				outputLayerErrors[outputIndex] = error * sigmoidDerivative(outputLayerOutputs[outputIndex])
+			for output := range outputLayerOutputs {
+				error := labels[example][output] - outputLayerOutputs[output]
+				outputLayerErrors[output] = error * sigmoidDerivative(outputLayerOutputs[output])
 			}
 
 			hiddenLayerErrors := make([]float64, network.HiddenLayerNeurons)
-			for hiddenIndex := range hiddenLayerOutputs {
+			for hiddenLayerOutput := range hiddenLayerOutputs {
 				errorSum := 0.0
-				for outputIndex := range outputLayerOutputs {
-					errorSum += network.WeightsHiddenToOutputLayer[hiddenIndex][outputIndex] * outputLayerErrors[outputIndex]
+				for outputLayerOutput := range outputLayerOutputs {
+					errorSum += network.WeightsHiddenToOutputLayer[hiddenLayerOutput][outputLayerOutput] * outputLayerErrors[outputLayerOutput]
 				}
-				hiddenLayerErrors[hiddenIndex] = sigmoidDerivative(hiddenLayerOutputs[hiddenIndex]) * errorSum
+
+				hiddenLayerErrors[hiddenLayerOutput] = sigmoidDerivative(hiddenLayerOutputs[hiddenLayerOutput]) * errorSum
 			}
 
 			for hiddenIndex := range network.WeightsHiddenToOutputLayer {
@@ -112,18 +113,18 @@ func Train(network *NeuralNetwork, examples [][]float64, labels [][]float64, lam
 				}
 			}
 
-			for outputIndex := range network.BiasForOutputLayer {
-				network.BiasForOutputLayer[outputIndex] += lambda * outputLayerErrors[outputIndex]
+			for output := range network.BiasForOutputLayer {
+				network.BiasForOutputLayer[output] += lambda * outputLayerErrors[output]
 			}
 
-			for inputIndex := range network.WeightsInputToHiddenLayer {
-				for hiddenIndex := range network.WeightsInputToHiddenLayer[inputIndex] {
-					network.WeightsInputToHiddenLayer[inputIndex][hiddenIndex] += lambda * hiddenLayerErrors[hiddenIndex] * examples[exampleIndex][inputIndex]
+			for input := range network.WeightsInputToHiddenLayer {
+				for hiddenLayer := range network.WeightsInputToHiddenLayer[input] {
+					network.WeightsInputToHiddenLayer[input][hiddenLayer] += lambda * hiddenLayerErrors[hiddenLayer] * examples[example][input]
 				}
 			}
 
-			for hiddenIndex := range network.BiasForHiddenLayer {
-				network.BiasForHiddenLayer[hiddenIndex] += lambda * hiddenLayerErrors[hiddenIndex]
+			for hiddenLayer := range network.BiasForHiddenLayer {
+				network.BiasForHiddenLayer[hiddenLayer] += lambda * hiddenLayerErrors[hiddenLayer]
 			}
 		}
 	}
@@ -139,14 +140,14 @@ func PrintTrainingResults(network *NeuralNetwork, examples [][]float64, labels [
 	for i := range network.WeightsInputToHiddenLayer {
 		fmt.Printf("  Input %d: %v\n", i, network.WeightsInputToHiddenLayer[i])
 	}
-	fmt.Printf("Bias Hidden: %v\n\n", network.BiasForHiddenLayer)
 
+	fmt.Printf("Bias Hidden: %v\n\n", network.BiasForHiddenLayer)
 	fmt.Println("Weights Hidden -> Output:")
 	for i := range network.WeightsHiddenToOutputLayer {
 		fmt.Printf("  Hidden %d: %v\n", i, network.WeightsHiddenToOutputLayer[i])
 	}
-	fmt.Printf("Bias Output: %v\n\n", network.BiasForOutputLayer)
 
+	fmt.Printf("Bias Output: %v\n\n", network.BiasForOutputLayer)
 	for i, example := range examples {
 		output := Predict(network, example)
 		result := 0
