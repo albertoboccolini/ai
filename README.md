@@ -16,19 +16,6 @@ This project requires **Go version 1.25.2 or higher**. Make sure you have a comp
 
 3. Have fun and learn by experimenting with the code
 
-## Project Structure
-
-```
-ai/
-|--- main.go            # Entry point of the application with example usage
-|--- go.mod
-|--- predictors/
-│   |--- predictor.go   # Training function for a single perceptron and predictor interfaces
-|--- utils/
-|   |--- utils.go       # Perceptron implementation, activation function and some other utilities
-|--- README.md
-```
-
 ## Contributing
 
 If you notice any errors or bugs, feel free to open an issue or submit a PR with corrections. I am not a mathematician or an AI expert, just someone who wants to understand this subject, so I'm always open to contributions.
